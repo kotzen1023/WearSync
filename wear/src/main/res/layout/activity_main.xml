@@ -14,22 +14,37 @@
         android:layout_height="match_parent"
         app:layout_box="all">
 
-        <TextView
-            android:id="@+id/text"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/hello_world"
-            app:layout_box="all"
-            android:layout_weight="1"
-            android:gravity="center"/>
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/hello_world"
+                app:layout_box="all"
+                android:layout_weight="1"
+                android:gravity="center"/>
 
 
-        <Button
-            android:text="Button"
+            <Button
+                android:text="Button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/button2"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <ImageView
+
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/button2"
+            android:id="@+id/imageView"
             android:layout_weight="1" />
+
 
     </LinearLayout>
 

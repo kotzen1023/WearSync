@@ -1,5 +1,7 @@
 package com.seventhmoon.wearsync;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,15 +11,22 @@ import android.widget.Button;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.wearable.Asset;
+import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
+
+import java.io.ByteArrayOutputStream;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getName();
 
     private GoogleApiClient mGoogleApiClient;
     private static int count = 0;
+    Bitmap mBitmap = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +55,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 syncSampleDataItem();
+            }
+        });
+
+        Button btn2 = (Button) findViewById(R.id.button3);
+        btn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendAssetAndFinish(R.drawable.cb11);
             }
         });
     }
@@ -83,5 +100,27 @@ public class MainActivity extends AppCompatActivity {
         map.putString("string_example", "Sample String"+count);
         count++;
         Wearable.DataApi.putDataItem(mGoogleApiClient,  putRequest.asPutDataRequest());
+    }
+
+    private void sendAssetAndFinish(int id) {
+        // create an Asset
+        if (mBitmap != null) {
+            mBitmap.recycle();
+            mBitmap = null;
+        }
+        mBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(),
+                 R.drawable.cb11 ), 320, 320, false);
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        mBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        Asset asset = Asset.createFromBytes(baos.toByteArray());
+
+        // send Asset
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/NEW_PIC");
+        final DataMap map = putDataMapReq.getDataMap();
+        map.putAsset("assetbody", asset);
+        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
+        Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
+
+        //finish();
     }
 }

@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.google.android.gms.common.data.FreezableUtils;
+import com.google.android.gms.wearable.Asset;
 import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.DataMap;
@@ -29,6 +30,16 @@ public class DataLayerListenerService extends WearableListenerService {
                 int color = map.getInt("color");
                 String stringExample = map.getString("string_example");
                 Log.d(TAG, "stringExample = "+stringExample+" color = "+color);
+            }
+            else if("/NEW_PIC".equals(path)) {
+                final DataMap map = DataMapItem.fromDataItem(event.getDataItem()).getDataMap();
+                // read your values from map:
+                Asset asset = map.getAsset("assetbody");
+
+                byte[] data = asset.getData();
+                //int color = map.getInt("color");
+                //String stringExample = map.getString("string_example");
+                Log.d(TAG, "receive asset ! size = "+data.length);
             }
         }
     }
