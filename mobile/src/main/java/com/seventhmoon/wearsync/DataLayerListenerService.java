@@ -1,5 +1,6 @@
 package com.seventhmoon.wearsync;
 
+
 import android.net.Uri;
 import android.util.Log;
 
@@ -12,7 +13,6 @@ import com.google.android.gms.wearable.WearableListenerService;
 
 import java.util.List;
 
-
 public class DataLayerListenerService extends WearableListenerService {
     private static final String TAG = DataLayerListenerService.class.getName();
     @Override
@@ -23,12 +23,12 @@ public class DataLayerListenerService extends WearableListenerService {
         for(DataEvent event : events) {
             final Uri uri = event.getDataItem().getUri();
             final String path = uri!=null ? uri.getPath() : null;
-            if("/MOBILE".equals(path)) {
+            if("/WEAR".equals(path)) {
                 final DataMap map = DataMapItem.fromDataItem(event.getDataItem()).getDataMap();
                 // read your values from map:
-                int color = map.getInt("color");
-                String stringExample = map.getString("string_example");
-                Log.d(TAG, "stringExample = "+stringExample+" color = "+color);
+                //int color = map.getInt("color");
+                String stringExample = map.getString("wear_call");
+                Log.d(TAG, "stringExample = "+stringExample);
             }
         }
     }

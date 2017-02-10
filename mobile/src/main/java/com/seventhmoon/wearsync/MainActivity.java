@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         if(mGoogleApiClient==null)
             return;
 
-        final PutDataMapRequest putRequest = PutDataMapRequest.create("/SAMPLE");
+        final PutDataMapRequest putRequest = PutDataMapRequest.create("/MOBILE");
         final DataMap map = putRequest.getDataMap();
         map.putInt("color", Color.RED);
         map.putString("string_example", "Sample String"+count);
