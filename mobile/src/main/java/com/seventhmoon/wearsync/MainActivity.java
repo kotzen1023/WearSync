@@ -65,6 +65,14 @@ public class MainActivity extends AppCompatActivity {
                 sendAssetAndFinish(R.drawable.cb11);
             }
         });
+
+        Button btn3 = (Button) findViewById(R.id.button4);
+        btn3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendAssetAndFinish(R.drawable.cb12);
+            }
+        });
     }
 
     @Override
@@ -102,25 +110,57 @@ public class MainActivity extends AppCompatActivity {
         Wearable.DataApi.putDataItem(mGoogleApiClient,  putRequest.asPutDataRequest());
     }
 
-    private void sendAssetAndFinish(int id) {
+    private void sendAssetAndFinish(final int id) {
+        Log.d(TAG, "sendAssetAndFinish");
         // create an Asset
         if (mBitmap != null) {
             mBitmap.recycle();
             mBitmap = null;
         }
-        mBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(),
+        /*mBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(),
                  R.drawable.cb11 ), 320, 320, false);
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         mBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
         Asset asset = Asset.createFromBytes(baos.toByteArray());
 
         // send Asset
-        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/NEW_PIC");
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/PIC");
         final DataMap map = putDataMapReq.getDataMap();
         map.putAsset("assetbody", asset);
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
-        Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
+        Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);*/
+
+
 
         //finish();
+        new Thread() {
+
+            @Override
+
+            public void run() {
+                Log.d(TAG, "send start");
+                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), id);
+                final ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteStream);
+                Asset asset = Asset.createFromBytes(byteStream.toByteArray());
+                //Asset asset = createAssetFromBitmap(bitmap);
+                PutDataMapRequest dataMap = PutDataMapRequest.create("/PIC");
+                dataMap.getDataMap().putAsset("profileImage", asset);
+                dataMap.getDataMap().putLong("datasize", byteStream.size());
+                dataMap.getDataMap().putLong("count", count);
+                PutDataRequest request = dataMap.asPutDataRequest();
+                PendingResult<DataApi.DataItemResult> pendingResult = Wearable.DataApi
+                        .putDataItem(mGoogleApiClient, request);
+                count++;
+                Log.d(TAG, "send end");
+            }
+        }.start();
+
+    }
+
+    private static Asset createAssetFromBitmap(Bitmap bitmap) {
+        final ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteStream);
+        return Asset.createFromBytes(byteStream.toByteArray());
     }
 }
